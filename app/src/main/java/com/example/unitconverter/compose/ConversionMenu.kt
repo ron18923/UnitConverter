@@ -1,7 +1,6 @@
-package com.example.unitconverter
+package com.example.unitconverter.compose
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
@@ -11,17 +10,22 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.example.unitconverter.data.Conversion
 
 @Composable
-fun ConversionMenu(list: List<Conversion>, modifier: Modifier = Modifier) {
+fun ConversionMenu(
+    list: List<Conversion>,
+    modifier: Modifier = Modifier,
+    convert: (Conversion) -> Unit
+) {
 
     var displayingText by remember { mutableStateOf("Select the conversion type") }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
@@ -33,7 +37,11 @@ fun ConversionMenu(list: List<Conversion>, modifier: Modifier = Modifier) {
         OutlinedTextField(
             value = displayingText,
             onValueChange = { displayingText = it },
-            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            ),
             modifier = modifier
                 .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->
@@ -57,6 +65,7 @@ fun ConversionMenu(list: List<Conversion>, modifier: Modifier = Modifier) {
                 DropdownMenuItem(onClick = {
                     displayingText = conversion.description
                     expanded = false
+                    convert(conversion)
                 }) {
                     Text(
                         text = conversion.description,
