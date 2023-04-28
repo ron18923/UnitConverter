@@ -1,5 +1,7 @@
 package com.example.unitconverter.compose
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -23,10 +25,17 @@ fun BaseScreen(
     val list = converterViewModel.getConversions()
     val historyList = converterViewModel.resultList.collectAsState(initial = emptyList())
     Column(modifier = modifier.padding(30.dp)) {
-        TopScreen(list){message1, message2 ->
+        TopScreen(list) { message1, message2 ->
             converterViewModel.addResult(message1, message2)
         }
         Spacer(modifier = modifier.height(20.dp))
-        HistoryScreen(historyList)
+        HistoryScreen(
+            historyList,
+            onCloseTask = { item ->
+                converterViewModel.deleteResult(item)
+            },
+            {
+                converterViewModel.deleteAll()
+            })
     }
 }

@@ -11,14 +11,17 @@ import com.example.unitconverter.compose.BaseScreen
 import com.example.unitconverter.data.ConverterDatabase
 import com.example.unitconverter.data.ConverterRepositoryImpl
 import com.example.unitconverter.ui.theme.UnitConverterTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var viewModelFactory : ConverterViewModelFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val dao = ConverterDatabase.getInstance(applicationContext).converterDAO
-        val repository = ConverterRepositoryImpl(dao)
-        val viewModelFactory = ConverterViewModelFactory(repository)
 
         setContent {
             UnitConverterTheme {

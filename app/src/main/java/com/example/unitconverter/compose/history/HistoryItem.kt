@@ -1,5 +1,6 @@
 package com.example.unitconverter.compose.history
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -45,7 +46,9 @@ fun HistoryItem(
                 fontSize = 20.sp
             )
         }
-        IconButton(onClick = { onClose }) {
+        IconButton(onClick = {
+            onClose()
+        }) {
             Icon(Icons.Filled.Close, contentDescription = "close")
         }
     }
