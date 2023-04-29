@@ -1,14 +1,11 @@
 package com.example.unitconverter.compose
 
+import android.content.res.Configuration
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.unitconverter.ConverterViewModel
@@ -24,18 +21,63 @@ fun BaseScreen(
 ) {
     val list = converterViewModel.getConversions()
     val historyList = converterViewModel.resultList.collectAsState(initial = emptyList())
-    Column(modifier = modifier.padding(30.dp)) {
-        TopScreen(list) { message1, message2 ->
-            converterViewModel.addResult(message1, message2)
+
+    val configuration = LocalConfiguration.current
+    var isLandscape by remember { mutableStateOf(false) }
+
+    when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            isLandscape = true
+            Row(
+                modifier = modifier
+                    .padding(30.dp)
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                TopScreen(
+                    list,
+                    converterViewModel.selectedConversion,
+                    converterViewModel.inputText,
+                    converterViewModel.typedValue,
+                    isLandscape
+                ) { message1, message2 ->
+                    Log.d("MYTAG", "save")
+                    converterViewModel.addResult(message1, message2)
+                }
+                Spacer(modifier = modifier.width(10.dp))
+                HistoryScreen(
+                    historyList,
+                    onCloseTask = { item ->
+                        converterViewModel.deleteResult(item)
+                    },
+                    {
+                        converterViewModel.deleteAll()
+                    })
+            }
         }
-        Spacer(modifier = modifier.height(20.dp))
-        HistoryScreen(
-            historyList,
-            onCloseTask = { item ->
-                converterViewModel.deleteResult(item)
-            },
-            {
-                converterViewModel.deleteAll()
-            })
+        else -> {
+            isLandscape = false
+            Column(modifier = modifier.padding(30.dp)) {
+                TopScreen(
+                    list,
+                    converterViewModel.selectedConversion,
+                    converterViewModel.inputText,
+                    converterViewModel.typedValue,
+                    isLandscape
+                ) { message1, message2 ->
+                    Log.d("MYTAG", "save")
+                    converterViewModel.addResult(message1, message2)
+                }
+                Spacer(modifier = modifier.height(20.dp))
+                HistoryScreen(
+                    historyList,
+                    onCloseTask = { item ->
+                        converterViewModel.deleteResult(item)
+                    },
+                    {
+                        converterViewModel.deleteAll()
+                    })
+            }
+        }
     }
 }
