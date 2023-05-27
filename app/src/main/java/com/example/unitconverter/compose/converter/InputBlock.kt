@@ -66,7 +66,7 @@ fun InputBlock(
                 Text(
                     text = "Convert",
                     fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight(700),
                     color = Color.Blue
                 )
             }
